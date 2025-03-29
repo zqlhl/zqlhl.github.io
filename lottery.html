@@ -1,86 +1,121 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>抽奖环节</title>
+    <title>幸运抽奖</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: "Microsoft YaHei", sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #4c4949;
+            background: linear-gradient(135deg, #2c3e50, #4ca1af);
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
         }
         .container {
             text-align: center;
-            background-color: rgb(32, 22, 22);
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(160, 65, 65, 0.2);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
             width: 90%;
-            max-width: 520px;
+            max-width: 600px;
             margin: 20px;
-            background-image: url('dnhjtp.jpg'); /* 添加桌面背景图片 */
-            background-size: cover;
-            background-position: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
         }
-        .prize {
-            font-size: 52px;
-            margin-top: 47px;
-            color: #d25151;
+        h1 {
+            color: #ffd700;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
         .message {
-            font-size: 18px;
-            color: #312222;
+            color: #fff;
+            font-size: 1.2em;
+            margin: 15px 0;
+            opacity: 0.9;
+        }
+        .prize {
+            font-size: 2.8em;
+            color: #ff6347;
+            margin: 30px 0;
+            padding: 15px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+            animation: fadeInUp 0.5s ease-out;
         }
         @media (max-width: 600px) {
             .container {
-                background-image: url('.jpg'); /* 添加手机端背景图片 */
+                padding: 20px;
+            }
+            h1 {
+                font-size: 1.8em;
             }
             .prize {
-                font-size: 20px;
+                font-size: 1.5em;
             }
-            .message {
-                font-size: 16px;
-            }
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>恭喜你猜对了！</h1>
-        <p class="message">以下是你的奖品：</p>
-        <p id="prize" class="prize">正在加载...</p>
+        <h1>🎉 恭喜您猜对了！🎉</h1>
+        <p class="message">您获得的奖品是：</p>
+        <p id="prize" class="prize" data-loading>正在抽取中...</p>
+        <p class="message">请截图保存兑奖凭证</p>
     </div>
 
     <script>
-        // 获取奖品列表
-        fetch('prizes.txt')
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok ' + response.statusText);
-                }
-                return response.text();
-            })
-            .then(data => {
-                const prizes = data.split('\n').filter(prize => prize.trim() !== '');
-                if (prizes.length === 0) {
-                    throw new Error('No prizes found in the file.');
-                }
-                const randomIndex = Math.floor(Math.random() * prizes.length);
-                document.getElementById('prize').innerText = prizes[randomIndex];
-            })
-            .catch(error => {
-                console.error('Error fetching prizes:', error);
-                document.getElementById('prize').innerText = '无法加载奖品，请稍后再试。';
-            });
+        // 增强型抽奖逻辑
+        function initLottery() {
+            const prizeElement = document.getElementById('prize');
+            
+            // 显示加载状态
+            prizeElement.setAttribute('data-loading', '');
+
+            fetch('prizes.txt')
+                .then(response => {
+                    if (!response.ok) throw new Error('网络响应异常');
+                    return response.text();
+                })
+                .then(text => {
+                    const prizes = text.split('\n')
+                        .map(p => p.trim())
+                        .filter(p => p.length > 0);
+                    
+                    if (prizes.length === 0) throw new Error('奖品列表为空');
+
+                    // 模拟抽奖过程
+                    let count = 0;
+                    const animate = () => {
+                        if (count++ < 15) {
+                            prizeElement.textContent = prizes[Math.floor(Math.random() * prizes.length)];
+                            setTimeout(animate, 100);
+                        } else {
+                            const finalPrize = prizes[Math.floor(Math.random() * prizes.length)];
+                            prizeElement.textContent = finalPrize;
+                            prizeElement.removeAttribute('data-loading');
+                        }
+                    };
+                    animate();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    prizeElement.textContent = '🎁 奖品加载中，请稍后刷新';
+                    prizeElement.style.color = '#fff';
+                });
+        }
+
+        // 页面加载后启动抽奖
+        window.addEventListener('DOMContentLoaded', initLottery);
     </script>
 </body>
 </html>
