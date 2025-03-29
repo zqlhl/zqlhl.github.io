@@ -7,21 +7,31 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            text-align: center;
-            margin-top: 50px;
-            background-image: url('https://bz.zzzmh.cn/index'); /* 替换为实际的第一张图片URL */
+            margin-top: 60px;
+            background-image: url('biejit.jpg'); /* 设置背景图片 */
             background-size: cover; /* 背景图片覆盖整个容器 */
-            background-position: center; /* 背景图片居中 */
+            background-position: bottom center; /* 背景图片居中 */
             background-repeat: no-repeat; /* 背景图片不重复 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; /* 确保 body 高度占满视口 */
+        }
+        .container {
+            text-align: center;
+            width: 50%; /* 根据需要调整宽度 */
         }
         .message {
             margin-top: 20px;
             font-size: 18px;
-            color: #333;
+            color: #181313;
         }
         .range {
             font-size: 16px;
-            color: #555;
+            color: transparent; /* 设置文字颜色为透明 */
+            background: linear-gradient(to right, blue, black); /* 添加蓝黑渐变背景 */
+            -webkit-background-clip: text; /* 将背景剪裁为文字形状 */
+            background-clip: text; /* 将背景剪裁为文字形状 */
         }
         input {
             padding: 15px;
@@ -39,12 +49,14 @@
     </style>
 </head>
 <body>
-    <h1>猜数字小游戏</h1>
-    <p class="message">我已经想好了一个 1 到 100 之间的数字，你能猜到它吗？</p>
-    <p class="range">当前范围：1 - 100</p>
-    <input type="number" id="guessInput" placeholder="输入你的猜测">
-    <button onclick="checkGuess()">提交猜测</button>
-    <p id="result" class="message"></p>
+    <div class="container">
+        <h1>猜数字小游戏</h1>
+        <p class="message">我已经想好了一个 1 到 100 之间的数字，你能猜到它吗？</p>
+        <p class="range">当前范围：1 - 100</p>
+        <input type="number" id="guessInput" placeholder="输入你的猜测">
+        <button onclick="checkGuess()">提交猜测</button>
+        <p id="result" class="message"></p>
+    </div>
 
     <script>
         // 生成一个 1 到 100 的随机整数
@@ -78,6 +90,9 @@
 
             // 更新范围提示
             document.querySelector('.range').innerText = `当前范围：${minRange} - ${maxRange}`;
+
+            // 清空输入框
+            document.getElementById('guessInput').value = '';
         }
     </script>
 </body>
