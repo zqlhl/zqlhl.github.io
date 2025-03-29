@@ -33,18 +33,53 @@
             -webkit-background-clip: text; /* 将背景剪裁为文字形状 */
             background-clip: text; /* 将背景剪裁为文字形状 */
         }
-        input {
+        .input-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .input-container input {
             padding: 15px;
             font-size: 20px;
-            margin-top: 20px;
             width: 200px;
+            margin-right: 10px;
         }
         button {
-            padding: 20px 40px; /* 增加内边距 */
-            font-size: 24px; /* 增加字体大小 */
-            margin-top: 20px;
+            padding: 15px 40px;
+            font-size: 16px;
             cursor: pointer;
-            width: 250px; /* 增加宽度 */
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .button-container {
+            margin-top: 20px;
+        }
+
+        /* 响应式布局 */
+        @media (max-width: 768px) {
+            .container {
+                width: 80%; /* 在小屏幕上增加宽度 */
+            }
+
+            .input-container {
+                flex-direction: column; /* 垂直排列 */
+            }
+
+            .input-container input {
+                width: calc(100% - 20px); /* 输入框宽度自适应 */
+                margin-bottom: 10px; /* 移动到下一行 */
+                margin-right: 0;
+            }
+
+            .input-container button {
+                width: 100%; /* 按钮宽度自适应 */
+            }
         }
     </style>
 </head>
@@ -53,46 +88,54 @@
         <h1>猜数字小游戏</h1>
         <p class="message">我已经想好了一个 1 到 100 之间的数字，你能猜到它吗？</p>
         <p class="range">当前范围：1 - 100</p>
-        <input type="number" id="guessInput" placeholder="输入你的猜测">
-        <button onclick="checkGuess()">提交猜测</button>
+        <div class="input-container">
+            <input type="number" id="guessInput" placeholder="输入你的猜测">
+            <button onclick="checkGuess()">提交猜测</button>
+        </div>
         <p id="result" class="message"></p>
+        <div class="button-container">
+            <button onclick="resetGame()">刷新游戏</button>
+        </div>
     </div>
 
     <script>
-        // 生成一个 1 到 100 的随机整数
-        const targetNumber = Math.floor(Math.random() * 100) + 1;
+        let targetNumber = Math.floor(Math.random() * 100) + 1;
         let minRange = 1;
         let maxRange = 100;
 
-        // 检查用户的猜测
         function checkGuess() {
-            // 获取用户输入的数字
             const userGuess = parseInt(document.getElementById('guessInput').value);
 
-            // 检查输入是否有效
             if (isNaN(userGuess) || userGuess < minRange || userGuess > maxRange) {
                 document.getElementById('result').innerText = '请输入一个有效的数字！';
+                document.getElementById('guessInput').value = '';
                 return;
             }
 
-            // 比较用户输入与目标数字
             if (userGuess < targetNumber) {
                 document.getElementById('result').innerText = '太小了！再试一次。';
-                minRange = userGuess + 1; // 更新最小范围
+                minRange = userGuess + 1;
             } else if (userGuess > targetNumber) {
                 document.getElementById('result').innerText = '太大了！再试一次。';
-                maxRange = userGuess - 1; // 更新最大范围
+                maxRange = userGuess - 1;
             } else {
                 document.getElementById('result').innerText = '恭喜你，猜对了！答案是 ' + targetNumber;
-                document.getElementById('guessInput').disabled = true; // 禁用输入框
+                document.getElementById('guessInput').disabled = true;
                 return;
             }
 
-            // 更新范围提示
             document.querySelector('.range').innerText = `当前范围：${minRange} - ${maxRange}`;
-
-            // 清空输入框
             document.getElementById('guessInput').value = '';
+        }
+
+        function resetGame() {
+            targetNumber = Math.floor(Math.random() * 100) + 1;
+            minRange = 1;
+            maxRange = 100;
+            document.getElementById('result').innerText = '';
+            document.getElementById('guessInput').value = '';
+            document.getElementById('guessInput').disabled = false;
+            document.querySelector('.range').innerText = '当前范围：1 - 100';
         }
     </script>
 </body>
