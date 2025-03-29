@@ -3,48 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>猜数字小游戏</title>
+    <title>和女朋友的小游戏</title>
     <style>
+        /* 全局样式 */
         body {
             font-family: Arial, sans-serif;
-            margin-top: 60px;
-            background-image: url('biejit.jpg'); /* 默认背景图片 */
-            background-size: cover; /* 背景图片覆盖整个容器 */
-            background-position: bottom center; /* 背景图片居中 */
-            background-repeat: no-repeat; /* 背景图片不重复 */
+            margin: 0;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh; /* 确保 body 高度占满视口 */
+            height: 100vh;
+            background-image: url('biejit.jpg'); /* 背景图片 */
+            background-size: cover;
+            background-position: bottom center;
+            background-repeat: no-repeat;
         }
+
+        /* 容器样式 */
         .container {
             text-align: center;
-            width: 50%; /* 根据需要调整宽度 */
+            width: 50%;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
+
+        /* 提示信息样式 */
         .message {
             margin-top: 20px;
             font-size: 18px;
-            color: #181313;
+            color: #333;
         }
+
+        /* 当前范围显示样式 */
         .range {
             font-size: 16px;
-            color: transparent; /* 设置文字颜色为透明 */
-            background: linear-gradient(to right, blue, black); /* 添加蓝黑渐变背景 */
-            -webkit-background-clip: text; /* 将背景剪裁为文字形状 */
-            background-clip: text; /* 将背景剪裁为文字形状 */
+            color: transparent; /* 文字颜色透明 */
+            background: linear-gradient(to right, blue, black); /* 渐变背景 */
+            -webkit-background-clip: text;
+            background-clip: text;
         }
+
+        /* 输入框和按钮容器样式 */
         .input-container {
             display: flex;
             justify-content: center;
             align-items: center;
             margin-top: 20px;
         }
+
+        /* 响应式布局 */
+        @media (max-width: 768px) {
+            .container {
+                width: 80%;
+            }
+
+            .input-container {
+                flex-direction: column;
+            }
+
+            .input-container input {
+                width: calc(100% - 20px);
+                margin-bottom: 10px;
+                margin-right: 0;
+            }
+
+            .input-container button {
+                width: 100%;
+            }
+        }
+
+        /* 输入框样式 */
         .input-container input {
             padding: 15px;
             font-size: 20px;
             width: 200px;
             margin-right: 10px;
+            border: none;
+            border-radius: 5px;
         }
+
+        /* 按钮样式 */
         button {
             padding: 15px 40px;
             font-size: 16px;
@@ -53,38 +92,16 @@
             color: white;
             border: none;
             border-radius: 5px;
+            transition: background-color 0.3s ease;
         }
+
         button:hover {
             background-color: #45a049;
         }
+
+        /* 按钮容器样式 */
         .button-container {
             margin-top: 20px;
-        }
-
-        /* 响应式布局 */
-        @media (max-width: 768px) {
-            .container {
-                width: 80%; /* 在小屏幕上增加宽度 */
-            }
-
-            .input-container {
-                flex-direction: column; /* 垂直排列 */
-            }
-
-            .input-container input {
-                width: calc(100% - 20px); /* 输入框宽度自适应 */
-                margin-bottom: 10px; /* 移动到下一行 */
-                margin-right: 0;
-            }
-
-            .input-container button {
-                width: 100%; /* 按钮宽度自适应 */
-            }
-
-            /* 手机端背景图片 */
-            body {
-                background-image: url('sjbz.jpg'); /* 手机端背景图片 */
-            }
         }
     </style>
 </head>
@@ -104,19 +121,25 @@
     </div>
 
     <script>
+        // 初始化目标数字和范围
         let targetNumber = Math.floor(Math.random() * 100) + 1;
         let minRange = 1;
         let maxRange = 100;
 
+        /**
+         * 检查用户输入的猜测
+         */
         function checkGuess() {
             const userGuess = parseInt(document.getElementById('guessInput').value);
 
+            // 验证输入是否有效
             if (isNaN(userGuess) || userGuess < minRange || userGuess > maxRange) {
                 document.getElementById('result').innerText = '请输入一个有效的数字！';
                 document.getElementById('guessInput').value = '';
                 return;
             }
 
+            // 根据猜测调整范围
             if (userGuess < targetNumber) {
                 document.getElementById('result').innerText = '太小了！再试一次。';
                 minRange = userGuess + 1;
@@ -126,13 +149,21 @@
             } else {
                 document.getElementById('result').innerText = '恭喜你，猜对了！答案是 ' + targetNumber;
                 document.getElementById('guessInput').disabled = true;
+                // 2秒后跳转到 lottery.html
+                setTimeout(function() {
+                    window.location.href = "lottery.html";
+                }, 2000); // 调整为2秒
                 return;
             }
 
+            // 更新范围显示
             document.querySelector('.range').innerText = `当前范围：${minRange} - ${maxRange}`;
             document.getElementById('guessInput').value = '';
         }
 
+        /**
+         * 重置游戏
+         */
         function resetGame() {
             targetNumber = Math.floor(Math.random() * 100) + 1;
             minRange = 1;

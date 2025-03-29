@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>抽奖环节</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #4c4949;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            text-align: center;
+            background-color: rgb(32, 22, 22);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(160, 65, 65, 0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 90%;
+            max-width: 520px;
+            margin: 20px;
+            background-image: url('dnhjtp.jpg'); /* 添加桌面背景图片 */
+            background-size: cover;
+            background-position: center;
+        }
+        .prize {
+            font-size: 52px;
+            margin-top: 47px;
+            color: #d25151;
+        }
+        .message {
+            font-size: 18px;
+            color: #312222;
+        }
+        @media (max-width: 600px) {
+            .container {
+                background-image: url('sjhjtp.jpg'); /* 添加手机端背景图片 */
+            }
+            .prize {
+                font-size: 20px;
+            }
+            .message {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>恭喜你猜对了！</h1>
+        <p class="message">以下是你的奖品：</p>
+        <p id="prize" class="prize">正在加载...</p>
+    </div>
+
+    <script>
+        // 获取奖品列表
+        fetch('prizes.txt')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+                return response.text();
+            })
+            .then(data => {
+                const prizes = data.split('\n').filter(prize => prize.trim() !== '');
+                if (prizes.length === 0) {
+                    throw new Error('No prizes found in the file.');
+                }
+                const randomIndex = Math.floor(Math.random() * prizes.length);
+                document.getElementById('prize').innerText = prizes[randomIndex];
+            })
+            .catch(error => {
+                console.error('Error fetching prizes:', error);
+                document.getElementById('prize').innerText = '无法加载奖品，请稍后再试。';
+            });
+    </script>
+</body>
+</html>
