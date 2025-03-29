@@ -149,10 +149,10 @@
             } else {
                 document.getElementById('result').innerText = '恭喜你，猜对了！答案是 ' + targetNumber;
                 document.getElementById('guessInput').disabled = true;
-                // 2秒后跳转到 lottery.html
+                // 200ms后跳转到 lottery.html
                 setTimeout(function() {
                     window.location.href = "lottery.html";
-                }, 2000); // 调整为2秒
+                }, 200); // 调整为200ms
                 return;
             }
 
