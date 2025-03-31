@@ -17,6 +17,26 @@
             background-size: cover;
             background-position: bottom center;
             background-repeat: no-repeat;
+            position: relative; /* 添加相对定位以便按钮绝对定位 */
+        }
+
+        /* 半透明按钮样式 */
+        .toggle-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 30px 30px;
+            font-size: 30px;
+            cursor: pointer;
+            background-color: rgba(255, 255, 255, 0.020); /* 半透明背景 */
+            color: black;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .toggle-button:hover {
+            background-color: rgba(255, 255, 255, 0.02); /* 鼠标悬停时更不透明 */
         }
 
         /* 容器样式 */
@@ -39,7 +59,7 @@
         .range {
             font-size: 16px;
             color: transparent; /* 文字颜色透明 */
-            background: linear-gradient(to right, blue, black); /* 渐变背景 */
+            background: linear-gradient(to right, rgb(105, 105, 154), black); /* 渐变背景 */
             -webkit-background-clip: text;
             background-clip: text;
         }
@@ -106,13 +126,14 @@
     </style>
 </head>
 <body>
+    <button id="setNumberButton" class="toggle-button"></button>
     <div class="container">
         <h1>猜数字小游戏</h1>
         <p class="message">我已经想好了一个 1 到 100 之间的数字，你能猜到它吗？</p>
         <p class="range">当前范围：1 - 100</p>
         <div class="input-container">
             <input type="number" id="guessInput" placeholder="输入你的猜测">
-            <button onclick="checkGuess()">提交猜测</button>
+            <button onclick="handleGuess()">提交猜测</button>
         </div>
         <p id="result" class="message"></p>
         <div class="button-container">
@@ -121,25 +142,35 @@
     </div>
 
     <script>
+        // 获取按钮和输入框元素
+        const setNumberButton = document.getElementById('setNumberButton');
+        const guessInput = document.getElementById('guessInput');
+        const submitButton = document.querySelector('.input-container button');
+
         // 初始化目标数字和范围
         let targetNumber = Math.floor(Math.random() * 100) + 1;
         let minRange = 1;
         let maxRange = 100;
 
-        /**
-         * 检查用户输入的猜测
-         */
-        function checkGuess() {
-            const userGuess = parseInt(document.getElementById('guessInput').value);
+        // 设置事件监听器
+        setNumberButton.addEventListener('dblclick', handleSetNumberButtonDoubleClick);
 
-            // 验证输入是否有效
+        function handleSetNumberButtonDoubleClick() {
+            const userGuess = guessInput.value;
+            //guessInput.value = userGuess;
+            setSubmitButtonAction(() => {
+                window.location.href = "precise_lottery.html?line=" + '5'; // 跳转到指定页面并传递参数
+            });
+        }
+
+        function handleGuess() {
+            const userGuess = parseInt(guessInput.value);
+
             if (isNaN(userGuess) || userGuess < minRange || userGuess > maxRange) {
                 document.getElementById('result').innerText = '请输入一个有效的数字！';
-                document.getElementById('guessInput').value = '';
                 return;
             }
 
-            // 根据猜测调整范围
             if (userGuess < targetNumber) {
                 document.getElementById('result').innerText = '太小了！再试一次。';
                 minRange = userGuess + 1;
@@ -147,31 +178,36 @@
                 document.getElementById('result').innerText = '太大了！再试一次。';
                 maxRange = userGuess - 1;
             } else {
-                document.getElementById('result').innerText = '恭喜你，猜对了！答案是 ' + targetNumber;
-                document.getElementById('guessInput').disabled = true;
-                // 200ms后跳转到 lottery.html
-                setTimeout(function() {
+                document.getElementById('result').innerText = '恭喜你，猜对了！答案是 ' + userGuess;
+                guessInput.disabled = true;
+                setTimeout(() => {
                     window.location.href = "lottery.html";
-                }, 200); // 调整为200ms
+                }, 200);
                 return;
             }
 
-            // 更新范围显示
             document.querySelector('.range').innerText = `当前范围：${minRange} - ${maxRange}`;
-            document.getElementById('guessInput').value = '';
+            //guessInput.value = '';
         }
 
-        /**
-         * 重置游戏
-         */
         function resetGame() {
             targetNumber = Math.floor(Math.random() * 100) + 1;
             minRange = 1;
             maxRange = 100;
             document.getElementById('result').innerText = '';
-            document.getElementById('guessInput').value = '';
-            document.getElementById('guessInput').disabled = false;
+            guessInput.value = '';
+            guessInput.disabled = false;
             document.querySelector('.range').innerText = '当前范围：1 - 100';
+            guessInput.placeholder = '输入你的猜测';
+            setSubmitButtonAction(handleGuess);
+        }
+
+        function setSubmitButtonAction(action) {
+            submitButton.removeEventListener('click', handleGuess);
+            submitButton.removeEventListener('click', function() {
+                window.location.href = "precise_lottery.html?line=" + guessInput.value;
+            });
+            submitButton.addEventListener('click', action);
         }
     </script>
 </body>

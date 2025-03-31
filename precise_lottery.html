@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>幸运抽奖</title>
+    <title>精准抽奖</title>
     <style>
+        /* 设置页面基础样式 */
         body {
             font-family: "Microsoft YaHei", sans-serif;
             margin: 0;
@@ -15,6 +16,7 @@
             align-items: center;
             min-height: 100vh;
         }
+        /* 设置容器样式 */
         .container {
             text-align: center;
             background: rgba(0, 0, 0, 0.8);
@@ -27,18 +29,21 @@
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255,255,255,0.1);
         }
+        /* 设置标题样式 */
         h1 {
             color: #ffd700;
             font-size: 2.5em;
             margin-bottom: 20px;
             text-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
+        /* 设置消息样式 */
         .message {
             color: #fff;
             font-size: 1.2em;
             margin: 15px 0;
             opacity: 0.9;
         }
+        /* 设置奖品样式 */
         .prize {
             font-size: 2.8em;
             color: #ff6347;
@@ -48,6 +53,7 @@
             border-radius: 8px;
             animation: fadeInUp 0.5s ease-out;
         }
+        /* 响应式布局调整 */
         @media (max-width: 600px) {
             .container {
                 padding: 20px;
@@ -59,6 +65,7 @@
                 font-size: 1.5em;
             }
         }
+        /* 定义淡入动画 */
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
@@ -74,13 +81,22 @@
     </div>
 
     <script>
+        // 获取URL参数
+        function getUrlParameter(name) {
+            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+            var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+            var results = regex.exec(location.search);
+            return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+        }
+
         // 增强型抽奖逻辑
-        function initLottery() {
+        function initLottery(lineNumber) {
             const prizeElement = document.getElementById('prize');
             
             // 显示加载状态
             prizeElement.setAttribute('data-loading', '');
 
+            // 从服务器获取奖品列表并进行抽奖
             fetch('prizes.txt')
                 .then(response => {
                     if (!response.ok) throw new Error('网络响应异常');
@@ -93,6 +109,11 @@
                     
                     if (prizes.length === 0) throw new Error('奖品列表为空');
 
+                    // 检查行号是否有效
+                    if (isNaN(lineNumber) || lineNumber < 0 || lineNumber >= prizes.length) {
+                        throw new Error('无效的行号');
+                    }
+
                     // 模拟抽奖过程
                     let count = 0;
                     const animate = () => {
@@ -100,8 +121,8 @@
                             prizeElement.textContent = prizes[Math.floor(Math.random() * prizes.length)];
                             setTimeout(animate, 100);
                         } else {
-                            const finalPrize = prizes[Math.floor(Math.random() * prizes.length)];
-                            prizeElement.textContent = finalPrize;
+                            // 显示选定的奖品
+                            prizeElement.textContent = prizes[lineNumber];
                             prizeElement.removeAttribute('data-loading');
                         }
                     };
@@ -115,7 +136,17 @@
         }
 
         // 页面加载后启动抽奖
-        window.addEventListener('DOMContentLoaded', initLottery);
+        window.addEventListener('DOMContentLoaded', () => {
+            const lineNumberFromUrl = parseInt(getUrlParameter('line')) - 1; // 行号从1开始，数组索引从0开始
+
+            // 如果URL中有行号参数，则使用该行号
+            if (!isNaN(lineNumberFromUrl) && lineNumberFromUrl >= 0) {
+                initLottery(lineNumberFromUrl);
+            } else {
+                // 否则使用默认行号（例如0）
+                initLottery(-1 + index);
+            }
+        });
     </script>
 </body>
 </html>
