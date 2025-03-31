@@ -126,12 +126,14 @@
     </style>
 </head>
 <body>
-    <button id="setNumberButton" class="toggle-button"></button>
+     <button id="setNumberButton" class="toggle-button"></button>
     <div class="container">
         <h1>猜数字小游戏</h1>
         <p class="message">我已经想好了一个 1 到 100 之间的数字，你能猜到它吗？</p>
         <p class="range">当前范围：1 - 100</p>
         <div class="input-container">
+            <!-- 添加 label 标签 -->
+            <label for="guessInput"></label>
             <input type="number" id="guessInput" placeholder="输入你的猜测">
             <button onclick="handleGuess()">提交猜测</button>
         </div>
@@ -159,7 +161,7 @@
             const userGuess = guessInput.value;
             //guessInput.value = userGuess;
             setSubmitButtonAction(() => {
-                window.location.href = "precise_lottery.html?line=" + '20'; // 跳转到指定页面并传递参数
+                window.location.href = "precise_lottery.html?line=" + userGuess; // 跳转到指定页面并传递参数
             });
         }
 

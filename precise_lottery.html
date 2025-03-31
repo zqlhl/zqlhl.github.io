@@ -83,11 +83,12 @@
     <script>
         // 获取URL参数
         function getUrlParameter(name) {
-            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
-            var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
-            var results = regex.exec(location.search);
+            name = name.replace(/[\[\]]/g, '\\$&'); // 使用 \g 替换所有匹配项
+            let regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+            let results = regex.exec(location.search);
             return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
         }
+
 
         // 增强型抽奖逻辑
         function initLottery(lineNumber) {
@@ -144,7 +145,7 @@
                 initLottery(lineNumberFromUrl);
             } else {
                 // 否则使用默认行号（例如0）
-                initLottery(-1 + index);
+                initLottery(-1);
             }
         });
     </script>
