@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -40,13 +40,12 @@
         
         function handleSetNumberButtonDoubleClick() {
             const userGuess = guessInput.value.trim(); // 去除输入值的空格
-            if (!userGuess || isNaN(userGuess) || userGuess < 1 || userGuess > 100) {
-                // 如果输入为空、不是数字或超出范围，显示提示信息
-                alert('请输入一个 1 到 100 之间的有效数字！');
-                return;
-            }
+            
             setSubmitButtonAction(() => {
-                window.location.href = "precise_lottery.html?line=" + encodeURIComponent(userGuess); // 跳转到指定页面并传递参数
+                document.getElementById('result').innerText = '恭喜你，猜对了！答案是 ' + userGuess; // 显示结果信息
+                setTimeout(() => {
+                    window.location.href = "precise_lottery.html?line=" + encodeURIComponent(userGuess); // 延迟跳转
+                }, 200); // 延迟 1 秒
             });
         }
 
@@ -69,7 +68,7 @@
                 guessInput.disabled = true;
                 setTimeout(() => {
                     window.location.href = "lottery.html";
-                }, 1000);
+                }, 200);
                 return;
             }
 
