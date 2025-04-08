@@ -77,15 +77,15 @@
         }
 
         function resetGame() {
-            targetNumber = Math.floor(Math.random() * 100) + 1;
+            targetNumber = Math.floor(Math.random() * 100) + 1; // 重新生成目标数字
             minRange = 1;
             maxRange = 100;
-            document.getElementById('result').innerText = '';
-            guessInput.value = '';
-            guessInput.disabled = false;
-            document.querySelector('.range').innerText = '当前范围：1 - 100';
-            guessInput.placeholder = '输入你的猜测';
-            setSubmitButtonAction(handleGuess);
+            document.getElementById('result').innerText = ''; // 清空结果信息
+            guessInput.value = ''; // 清空输入框
+            guessInput.disabled = false; // 启用输入框
+            document.querySelector('.range').innerText = '当前范围：1 - 100'; // 重置范围显示
+            guessInput.placeholder = '输入你的猜测'; // 重置占位符
+            setSubmitButtonAction(handleGuess); // 恢复提交按钮的默认行为
         }
 
         function setSubmitButtonAction(action) {
