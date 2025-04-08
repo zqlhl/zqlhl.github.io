@@ -4,129 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>和女朋友的小游戏</title>
-    <style>
-        /* 全局样式 */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-image: url('biejit.jpg'); /* 背景图片 */
-            background-size: cover;
-            background-position: bottom center;
-            background-repeat: no-repeat;
-            position: relative; /* 添加相对定位以便按钮绝对定位 */
-        }
-
-        /* 半透明按钮样式 */
-        .toggle-button {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            padding: 30px 30px;
-            font-size: 30px;
-            cursor: pointer;
-            background-color: rgba(255, 255, 255, 0.020); /* 半透明背景 */
-            color: black;
-            border: none;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
-        }
-
-        .toggle-button:hover {
-            background-color: rgba(255, 255, 255, 0.02); /* 鼠标悬停时更不透明 */
-        }
-
-        /* 容器样式 */
-        .container {
-            text-align: center;
-            width: 50%;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        /* 提示信息样式 */
-        .message {
-            margin-top: 20px;
-            font-size: 18px;
-            color: #333;
-        }
-
-        /* 当前范围显示样式 */
-        .range {
-            font-size: 16px;
-            color: transparent; /* 文字颜色透明 */
-            background: linear-gradient(to right, rgb(105, 105, 154), black); /* 渐变背景 */
-            -webkit-background-clip: text;
-            background-clip: text;
-        }
-
-        /* 输入框和按钮容器样式 */
-        .input-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-top: 20px;
-        }
-
-        /* 响应式布局 */
-        @media (max-width: 768px) {
-            .container {
-                width: 80%;
-            }
-
-            .input-container {
-                flex-direction: column;
-            }
-
-            .input-container input {
-                width: calc(100% - 20px);
-                margin-bottom: 10px;
-                margin-right: 0;
-            }
-
-            .input-container button {
-                width: 100%;
-            }
-        }
-
-        /* 输入框样式 */
-        .input-container input {
-            padding: 15px;
-            font-size: 20px;
-            width: 200px;
-            margin-right: 10px;
-            border: none;
-            border-radius: 5px;
-        }
-
-        /* 按钮样式 */
-        button {
-            padding: 15px 40px;
-            font-size: 16px;
-            cursor: pointer;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
-        }
-
-        button:hover {
-            background-color: #45a049;
-        }
-
-        /* 按钮容器样式 */
-        .button-container {
-            margin-top: 20px;
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-     <button id="setNumberButton" class="toggle-button"></button>
+    <button id="setNumberButton" class="toggle-button"></button>
     <div class="container">
         <h1>猜数字小游戏</h1>
         <p class="message">我已经想好了一个 1 到 100 之间的数字，你能猜到它吗？</p>
@@ -153,15 +34,19 @@
         let targetNumber = Math.floor(Math.random() * 100) + 1;
         let minRange = 1;
         let maxRange = 100;
-
+   
         // 设置事件监听器
         setNumberButton.addEventListener('dblclick', handleSetNumberButtonDoubleClick);
-
+        
         function handleSetNumberButtonDoubleClick() {
-            const userGuess = guessInput.value;
-            //guessInput.value = userGuess;
+            const userGuess = guessInput.value.trim(); // 去除输入值的空格
+            if (!userGuess || isNaN(userGuess) || userGuess < 1 || userGuess > 100) {
+                // 如果输入为空、不是数字或超出范围，显示提示信息
+                alert('请输入一个 1 到 100 之间的有效数字！');
+                return;
+            }
             setSubmitButtonAction(() => {
-                window.location.href = "precise_lottery.html?line=" + 43; // 跳转到指定页面并传递参数
+                window.location.href = "precise_lottery.html?line=" + encodeURIComponent(userGuess); // 跳转到指定页面并传递参数
             });
         }
 
